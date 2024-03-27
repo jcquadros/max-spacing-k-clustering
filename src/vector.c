@@ -34,9 +34,10 @@ data_vector vector_pop_back(Vector *v){
         printf("Empty Vector");
         exit(1);
     }
+
+    v->size--;
     data_vector data = v->data[v->size];
     v->data[v->size] = NULL;
-    v->size--;
     return data;
 }
 
