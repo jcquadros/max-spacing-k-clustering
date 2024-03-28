@@ -23,8 +23,14 @@ double *vertex_get_position(Vertex *v){
 }
 
 double vertex_distance_between(Vertex *v1, Vertex *v2, int dimension){
-    
-    return 0.0;
+    double soma = 0;
+    double dif = 0;
+    for(int i = 0; i < dimension; i++){
+        dif = v1->position[i] - v2->position[i];
+        pow(dif,2);
+        soma += dif;
+    }
+    return sqrt(soma);
 }
 
 void vertex_destroy(void *v){
