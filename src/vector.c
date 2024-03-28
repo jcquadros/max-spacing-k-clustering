@@ -12,6 +12,11 @@ struct vector{
 
 
 Vector *vector_init(int size, destroy_vector destroy_fn, compare_vector compare_fn){
+    if(size <= 0){
+        printf("Size must be greater than 0\n");
+        exit(1);
+    }
+    
     Vector *v = (Vector *)calloc(1, sizeof(Vector));
     v->destroy_fn = destroy_fn;
     v->compare_fn = compare_fn;
@@ -22,7 +27,7 @@ Vector *vector_init(int size, destroy_vector destroy_fn, compare_vector compare_
 }
 
 
-void vector_push_back(data_vector data, Vector *v){
+void vector_push_back(Vector *v, data_vector data){
     if(v->size >= v->capacity){
         v->capacity *= 2;
         v->data = (data_vector *)realloc(v->data, v->capacity * sizeof(data_vector));
@@ -34,7 +39,7 @@ void vector_push_back(data_vector data, Vector *v){
 data_vector vector_pop_back(Vector *v){
     if (v->size <= 0)
     {
-        printf("Empty Vector");
+        printf("Empty Vector\n");
         exit(1);
     }
 
@@ -61,6 +66,7 @@ void vector_destroy(Vector *v){
     for(int i = 0; i < v->size; i++){
         v->destroy_fn(v->data[i]);
     }
+    free(v->data);
     free(v);
 }
 

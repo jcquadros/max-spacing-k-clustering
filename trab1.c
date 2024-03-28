@@ -51,7 +51,7 @@ void setup(char *directory, Vector *vertex_vector, int * dimension){
         }
 
         Vertex * v = vertex_init(name, coord);
-        vector_push_back(v, vertex_vector);
+        vector_push_back(vertex_vector, v);
     }
     *dimension = n;
     free(line);
@@ -67,7 +67,7 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector, int dimensio
             double weight = vertex_distance_between(vertex1, vertex2, dimension);
             
             Edge *edge = edge_init(i, j, weight);
-            vector_push_back(edge, edge_vector);
+            vector_push_back(edge_vector, edge);
         }
     }
 }
@@ -91,6 +91,7 @@ int main(int argc, char **argv){
         return 1;
     }
     int * dimension = (int*)malloc(sizeof(int));
+    
     Vector *vertex_vector = vector_init(10, vertex_destroy, NULL);
     setup(argv[1], vertex_vector, dimension);
     
