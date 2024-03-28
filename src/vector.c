@@ -4,14 +4,16 @@
 struct vector{
     data_vector *data;
     destroy_vector destroy_fn;
+    compare_vector compare_fn;
     int size;
     int capacity;
 };
 
 
-Vector *vector_init(int size, destroy_vector destroy_fn){
+Vector *vector_init(int size, destroy_vector destroy_fn, compare_vector compare_fn){
     Vector *v = (Vector *)calloc(1, sizeof(Vector));
     v->destroy_fn = destroy_fn;
+    v->compare_fn = compare_fn;
     v->size = 0;
     v->capacity = size;
     v->data = (data_vector *)calloc(v->capacity, sizeof(data_vector));
@@ -59,4 +61,8 @@ void vector_destroy(Vector *v){
         v->destroy_fn(v->data[i]);
     }
     free(v);
+}
+
+void vector_sort(Vector *v){
+    qsort(v->data, v->size, sizeof(data_vector), v->compare_fn);
 }
