@@ -17,7 +17,7 @@ void vector_push_back(data_vector data, Vector *v);
 data_vector vector_pop_back(Vector *v);
 
 /*Recupera um item de uma dada posição*/
-data_vector vector_get(int idx, Vector *v);
+data_vector vector_get(Vector *v, int idx);
 
 /*Desaloca o vetor inclusive todos os itens*/
 void vector_destroy(Vector *v);

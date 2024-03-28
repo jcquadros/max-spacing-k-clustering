@@ -45,7 +45,7 @@ int vector_size(Vector *v){
     return v->size;
 }
 
-data_vector vector_get(int idx, Vector *v){
+data_vector vector_get(Vector *v, int idx){
     if (idx < 0 || idx >= v->size)
     {
         printf("Invalid idx '%d' for Vector with size '%d'.\n", idx, v->size);
