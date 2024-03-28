@@ -6,9 +6,28 @@
 #include <stdlib.h>
 
 void setup(char *directory, Vector *vertex_vector){
+
     // verificar se o arquivo de entrada existe, caso contrario encerrar programa 
     // ler entrada e salvar dados no vetor de vertices
-      
+    
+    FILE * file;
+    char * folder = "instancias/";
+    char path[100];
+    snprintf(path, sizeof(path), "%s%s", folder, directory);
+
+    file = fopen(path, "r"); 
+    // Confirmar como será guardado os arquivos de entrada.
+    // configurei assim pra ajudar com testes, ficar organizado
+    
+    if(file == NULL)
+        exit(printf("Arquivo de entradas não encontrado!\nNome: %s\n", directory));
+    
+    char line[100];
+    
+    while (fgets(line, sizeof(line), file) != NULL) {
+        printf("%s", line);
+    }
+    
 }
 
 void calculate_distance(Vector *edge_vector, Vector *vertex_vector){
@@ -21,12 +40,14 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector){
     }
 }
 
-int main(int argc, char *argv){
+int main(int argc, char **argv){
     printf("%d\n", argc);
+    
     if(argc < 3){
         // formato de entrada: ./trab1 entrada saida
         return 1;
     }
+
     Vector *vertex_vector = vector_init(0, vertex_destroy);
     setup(argv[1], vertex_vector);
 
