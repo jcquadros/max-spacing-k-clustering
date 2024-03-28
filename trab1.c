@@ -4,6 +4,8 @@
 #include "union_find.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 void setup(char *directory, Vector *vertex_vector){
 
@@ -19,15 +21,21 @@ void setup(char *directory, Vector *vertex_vector){
     char line[100];
     
     while (fgets(line, sizeof(line), file) != NULL) {
+
         char *name = strtok(line, ",");
-        float *x = strtok(NULL, ",");
-        float *y = strtok(NULL, "\0");
-
-        int n = strlen(name) + 1;
-        int name_aux = (char*)malloc(n * sizeof(char));
-        strcpy(name_aux, name);
-
-        //Vertex * v = vector_init(name_aux, atof(x), atof(y));
+        char *aux = strtok(NULL, ",");
+        
+        int n = 0;
+        double * coord = (double*)malloc(10*sizeof(double));
+        
+        while(1){
+            coord[n] = atof(aux);
+            //printf("%f ", coord[n]);
+            n++;
+            aux = strtok(NULL, ",");
+            if(aux == NULL)break;
+        }
+        Vertex * v = vertex_init(name, coord);
     }
     
     fclose(file);
@@ -44,7 +52,6 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector){
 }
 
 int main(int argc, char **argv){
-    printf("%d\n", argc);
     
     if(argc < 3){
         // formato de entrada: ./trab1 entrada saida
