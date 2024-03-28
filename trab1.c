@@ -21,7 +21,7 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector){
     }
 }
 
-int main(int argc, char **argv){
+int main(int argc, char *argv){
     printf("%d\n", argc);
     if(argc < 3){
         // formato de entrada: ./trab1 entrada saida
