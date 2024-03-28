@@ -3,13 +3,13 @@
 
 typedef struct vertex Vertex;
 
-Vertex *vertex_init(char *id, int *position);
+Vertex *vertex_init(char *id, double *position);
 
 char *vertex_get_id(Vertex *v);
 
-int *vertex_get_position(Vertex *v);
+double *vertex_get_position(Vertex *v);
 
-double vertex_distance_between(Vertex *v1, Vertex *v2);
+double vertex_distance_between(Vertex *v1, Vertex *v2, int dimension);
 
 void vertex_destroy(void *v);
 
