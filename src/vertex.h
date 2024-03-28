@@ -13,4 +13,6 @@ double vertex_distance_between(Vertex *v1, Vertex *v2, int dimension);
 
 void vertex_destroy(void *v);
 
+void vertex_print(Vertex *v, int d);
+
 #endif

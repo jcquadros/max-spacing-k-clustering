@@ -26,7 +26,7 @@ void setup(char *directory, Vector *vertex_vector){
         char *aux = strtok(NULL, ",");
         
         int n = 0;
-        double * coord = (double*)malloc(10*sizeof(double));
+        double * coord = (double*)malloc(20*sizeof(double));
         
         while(1){
             coord[n] = atof(aux);
@@ -36,6 +36,7 @@ void setup(char *directory, Vector *vertex_vector){
             if(aux == NULL)break;
         }
         Vertex * v = vertex_init(name, coord);
+        vertex_print(v, n);
     }
     
     fclose(file);
