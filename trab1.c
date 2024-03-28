@@ -18,7 +18,7 @@ void setup(char *directory, Vector *vertex_vector){
     if(file == NULL)
         exit(printf("Arquivo de entradas não encontrado!\nNome: %s\n", directory));
     
-    char line[100];
+    char line[10000];
     
     while (fgets(line, sizeof(line), file) != NULL) {
 
@@ -29,17 +29,15 @@ void setup(char *directory, Vector *vertex_vector){
         int aloc_init = 2;
         double * coord = (double*)malloc(aloc_init*sizeof(double));
         
-        while(1){
+        while(aux){
             coord[n] = atof(aux);
             //printf("%f ", coord[n]);
             n++;
-
-            aux = strtok(NULL, ",");
             if(n == aloc_init -1){
                 aloc_init *= 2;
                 coord = (double*)realloc(coord, aloc_init * sizeof(double));
             }
-            if(aux == NULL)break;
+            aux = strtok(NULL, ",");
         }
         Vertex * v = vertex_init(name, coord);
         vertex_print(v, n);
