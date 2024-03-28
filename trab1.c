@@ -7,7 +7,7 @@
 #include <string.h>
 
 
-void setup(char *directory, Vector *vertex_vector){
+void setup(char *directory, Vector *vertex_vector, int * dimension){
 
     // verificar se o arquivo de entrada existe, caso contrario encerrar programa 
     // ler entrada e salvar dados no vetor de vertices
@@ -18,31 +18,43 @@ void setup(char *directory, Vector *vertex_vector){
     if(file == NULL)
         exit(printf("Arquivo de entradas não encontrado!\nNome: %s\n", directory));
     
-    char line[10000];
-    
-    while (fgets(line, sizeof(line), file) != NULL) {
+    char *line = NULL;
+    size_t size = 0; 
+    int len, n = 0; 
 
-        char *name = strtok(line, ",");
-        char *aux = strtok(NULL, ",");
+    while ((len = getline(&line, &size, file)) != -1) {
         
-        int n = 0;
+        line[len - 1] = '\0';
+
+        char * name = strtok(line, ",");
+        char * token = strtok(NULL, ",");
+            
+            if(token == NULL){
+                exit(printf("Arquivo de entradas invalido!\n"));
+            } 
+        
+        n = 0;
         int aloc_init = 2;
         double * coord = (double*)malloc(aloc_init*sizeof(double));
-        
-        while(aux){
-            coord[n] = atof(aux);
-            //printf("%f ", coord[n]);
+       
+
+        while(token){
+            coord[n] = atof(token);
             n++;
-            if(n == aloc_init -1){
-                aloc_init *= 2;
-                coord = (double*)realloc(coord, aloc_init * sizeof(double));
-            }
-            aux = strtok(NULL, ",");
+
+                if(n == aloc_init -1){
+                    aloc_init *= 2;
+                    coord = (double*)realloc(coord, aloc_init * sizeof(double));
+                }
+
+            token = strtok(NULL, ",");
         }
+
         Vertex * v = vertex_init(name, coord);
-        vertex_print(v, n);
+        vector_push_back(v, vertex_vector);
     }
-    
+    *dimension = n;
+    free(line);
     fclose(file);
 }
 
@@ -60,20 +72,37 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector, int dimensio
     }
 }
 
+void print_teste(Vector *v, int * d)
+{
+    int i = 0;
+    int size_v = vector_size(v);
+    while(i < size_v){
+        
+        Vertex * vex = vector_get(v, i);
+        vertex_print(vex, *d);
+        i++;
+    }
+}
+
 int main(int argc, char **argv){
     
     if(argc < 3){
         // formato de entrada: ./trab1 entrada saida
         return 1;
     }
-    int dimension =0;
+    int * dimension = (int*)malloc(sizeof(int));
     Vector *vertex_vector = vector_init(10, vertex_destroy, NULL);
-    setup(argv[1], vertex_vector);
+    setup(argv[1], vertex_vector, dimension);
+    printf("%d\n", *dimension);
+    //print_teste(vertex_vector, dimension);
 
     int n_edges = vector_size(vertex_vector)-1;
     Vector *edge_vector = vector_init(n_edges, edge_destroy, edge_compare);
-    calculate_distance(edge_vector, vertex_vector, dimension);
+    calculate_distance(edge_vector, vertex_vector, *dimension);
 
+    vector_destroy(vertex_vector);
+    vector_destroy(edge_vector);
+    free(dimension);
     // ordenar
     // calcular a arvore minima
     // remover k ultimos

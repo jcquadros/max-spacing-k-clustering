@@ -67,3 +67,4 @@ void vector_destroy(Vector *v){
 void vector_sort(Vector *v){
     qsort(v->data, v->size, sizeof(data_vector), v->compare_fn);
 }
+

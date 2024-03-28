@@ -2,6 +2,7 @@
 #include "math.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 struct vertex {
     char *id;
@@ -10,7 +11,7 @@ struct vertex {
 
 Vertex *vertex_init(char *id, double *position){
     Vertex *v = (Vertex *)calloc(1, sizeof(Vertex));
-    v->id = id;
+    v->id = strdup(id);
     v->position = position;
     return v;
 }
@@ -50,7 +51,7 @@ void vertex_print(Vertex *v, int d)
 
     while (n < d){
         double p = v->position[n]; 
-        printf("%.15f ", p);
+        printf("%.2f ", p);
         n++;
     }
     printf("\n\n");
