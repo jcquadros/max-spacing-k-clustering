@@ -11,13 +11,7 @@ void setup(char *directory, Vector *vertex_vector){
     // ler entrada e salvar dados no vetor de vertices
     
     FILE * file;
-    char * folder = "instancias/";
-    char path[100];
-    snprintf(path, sizeof(path), "%s%s", folder, directory);
-
-    file = fopen(path, "r"); 
-    // Confirmar como será guardado os arquivos de entrada.
-    // configurei assim pra ajudar com testes, ficar organizado
+    file = fopen(directory, "r"); 
     
     if(file == NULL)
         exit(printf("Arquivo de entradas não encontrado!\nNome: %s\n", directory));
@@ -28,6 +22,7 @@ void setup(char *directory, Vector *vertex_vector){
         printf("%s", line);
     }
     
+    fclose(file);
 }
 
 void calculate_distance(Vector *edge_vector, Vector *vertex_vector){
