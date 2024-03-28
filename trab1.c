@@ -26,13 +26,19 @@ void setup(char *directory, Vector *vertex_vector){
         char *aux = strtok(NULL, ",");
         
         int n = 0;
-        double * coord = (double*)malloc(20*sizeof(double));
+        int aloc_init = 2;
+        double * coord = (double*)malloc(aloc_init*sizeof(double));
         
         while(1){
             coord[n] = atof(aux);
             //printf("%f ", coord[n]);
             n++;
+
             aux = strtok(NULL, ",");
+            if(n == aloc_init -1){
+                aloc_init *= 2;
+                coord = (double*)realloc(coord, aloc_init * sizeof(double));
+            }
             if(aux == NULL)break;
         }
         Vertex * v = vertex_init(name, coord);

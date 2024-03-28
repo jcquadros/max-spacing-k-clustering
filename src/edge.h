@@ -14,6 +14,6 @@ double edge_get_weight(Edge *ed);
 void edge_destroy(void *ed);
 
 /*Essa função de comparação basicamente vê se o peso de uma é maior menor ou igual ao da outra.*/
-int edge_compare(void *ed1, void *ed2);
+int edge_compare(const void *ed1, const void *ed2);
 
 #endif

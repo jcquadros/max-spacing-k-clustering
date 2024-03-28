@@ -4,7 +4,7 @@
 typedef struct vector Vector;
 typedef void* data_vector;
 typedef void (*destroy_vector)(data_vector);
-typedef void (*compare_vector)(data_vector, data_vector);
+typedef int (*compare_vector)(const void*, const void*);
 
 /*Cria vetor de tamanho 'size' */
 Vector *vector_init(int size, destroy_vector destroy_fn, compare_vector compare_fn);

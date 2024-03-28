@@ -32,7 +32,7 @@ void edge_destroy(void *ed){
     free((Edge*)ed);
 }
 
-int edge_compare(void *ed1, void *ed2){
+int edge_compare(const void *ed1, const void *ed2){
     Edge * edge1 = (Edge*) ed1;
     Edge * edge2 = (Edge*) ed2;
     
