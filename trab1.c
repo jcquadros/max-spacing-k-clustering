@@ -19,7 +19,15 @@ void setup(char *directory, Vector *vertex_vector){
     char line[100];
     
     while (fgets(line, sizeof(line), file) != NULL) {
-        printf("%s", line);
+        char *name = strtok(line, ",");
+        float *x = strtok(NULL, ",");
+        float *y = strtok(NULL, "\0");
+
+        int n = strlen(name) + 1;
+        int name_aux = (char*)malloc(n * sizeof(char));
+        strcpy(name_aux, name);
+
+        //Vertex * v = vector_init(name_aux, atof(x), atof(y));
     }
     
     fclose(file);
