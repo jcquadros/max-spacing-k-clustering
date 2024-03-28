@@ -72,14 +72,14 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector, int dimensio
     }
 }
 
-void print_teste(Vector *v, int * d)
+void print_teste(Vector *v, int d)
 {
     int i = 0;
     int size_v = vector_size(v);
     while(i < size_v){
         
         Vertex * vex = vector_get(v, i);
-        vertex_print(vex, *d);
+        vertex_print(vex, d);
         i++;
     }
 }
@@ -87,14 +87,15 @@ void print_teste(Vector *v, int * d)
 int main(int argc, char **argv){
     
     if(argc < 3){
-        // formato de entrada: ./trab1 entrada saida
+        // formato de entrada: ./trab1 entrada k saida
         return 1;
     }
     int * dimension = (int*)malloc(sizeof(int));
     Vector *vertex_vector = vector_init(10, vertex_destroy, NULL);
     setup(argv[1], vertex_vector, dimension);
-    printf("%d\n", *dimension);
-    //print_teste(vertex_vector, dimension);
+    
+    //printf("%d\n", *dimension);
+    //print_teste(vertex_vector, *dimension);
 
     int n_edges = vector_size(vertex_vector)-1;
     Vector *edge_vector = vector_init(n_edges, edge_destroy, edge_compare);
@@ -103,6 +104,7 @@ int main(int argc, char **argv){
     vector_destroy(vertex_vector);
     vector_destroy(edge_vector);
     free(dimension);
+
     // ordenar
     // calcular a arvore minima
     // remover k ultimos
