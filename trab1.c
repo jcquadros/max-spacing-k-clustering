@@ -33,12 +33,16 @@ void setup(char *directory, Vector *vertex_vector){
     fclose(file);
 }
 
-void calculate_distance(Vector *edge_vector, Vector *vertex_vector){
+void calculate_distance(Vector *edge_vector, Vector *vertex_vector, int dimension){
     int size_vv = vector_size(vertex_vector);
     for(int i = 0; i < size_vv - 1; i++){
         for(int j = i+1; j < size_vv; j++){
-            // para cada posição do vetor de vértices, calcular a distancia com os demais
-            // criar aresta (i, j e distancia) e inserir no vetor de arestas
+            Vertex *vertex1 = vector_get(vertex_vector, i);
+            Vertex *vertex2 = vector_get(vertex_vector, j);
+            double weight = vertex_distance_between(vertex1, vertex2, dimension);
+            
+            Edge *edge = edge_init(i, j, weight);
+            vector_push_back(edge, edge_vector);
         }
     }
 }
@@ -50,13 +54,13 @@ int main(int argc, char **argv){
         // formato de entrada: ./trab1 entrada saida
         return 1;
     }
-
+    int dimension =0;
     Vector *vertex_vector = vector_init(0, vertex_destroy);
     setup(argv[1], vertex_vector);
 
     int n_edges = vector_size(vertex_vector)-1;
     Vector *edge_vector = vector_init(n_edges, edge_destroy);
-    calculate_distance(edge_vector, vertex_vector);
+    calculate_distance(edge_vector, vertex_vector, dimension);
 
     // ordenar
     // calcular a arvore minima
