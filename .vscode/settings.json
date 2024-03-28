@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "vertex.h": "c"
+        "array": "c",
+        "string": "c",
+        "string_view": "c"
     }
 }

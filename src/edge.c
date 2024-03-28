@@ -32,10 +32,13 @@ void edge_destroy(void *ed){
     free((Edge*)ed);
 }
 
-int edge_compare(Edge *ed1, Edge *ed2){
-    if(ed1->weight > ed2->weight){
+int edge_compare(void *ed1, void *ed2){
+    Edge * edge1 = (Edge*) ed1;
+    Edge * edge2 = (Edge*) ed2;
+    
+    if(edge1->weight > edge2->weight){
         return 1;
-    }else if(ed1->weight < ed2->weight){
+    }else if(edge1->weight < edge2->weight){
         return -1;
     }
     return 0;

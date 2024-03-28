@@ -4,9 +4,10 @@
 typedef struct vector Vector;
 typedef void* data_vector;
 typedef void (*destroy_vector)(data_vector);
+typedef void (*compare_vector)(data_vector, data_vector);
 
 /*Cria vetor de tamanho 'size' */
-Vector *vector_init(int size, destroy_vector destroy_fn);
+Vector *vector_init(int size, destroy_vector destroy_fn, compare_vector compare_fn);
 
 int vector_size(Vector *v);
 
@@ -21,5 +22,7 @@ data_vector vector_get(Vector *v, int idx);
 
 /*Desaloca o vetor inclusive todos os itens*/
 void vector_destroy(Vector *v);
+
+void vector_sort(Vector *v);
 
 #endif 

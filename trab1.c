@@ -62,11 +62,11 @@ int main(int argc, char **argv){
         return 1;
     }
     int dimension =0;
-    Vector *vertex_vector = vector_init(0, vertex_destroy);
+    Vector *vertex_vector = vector_init(10, vertex_destroy, NULL);
     setup(argv[1], vertex_vector);
 
     int n_edges = vector_size(vertex_vector)-1;
-    Vector *edge_vector = vector_init(n_edges, edge_destroy);
+    Vector *edge_vector = vector_init(n_edges, edge_destroy, edge_compare);
     calculate_distance(edge_vector, vertex_vector, dimension);
 
     // ordenar
