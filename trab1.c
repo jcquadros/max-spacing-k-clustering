@@ -84,6 +84,30 @@ void print_teste(Vector *v, int d)
     }
 }
 
+
+void kruskal(Vector *edge_vector, Vector *vertex_vector, int k){
+    int size_v = vector_size(vertex_vector);
+    int size_e = vector_size(edge_vector);
+
+    UF *uf = uf_init(size_v);
+    vector_sort(edge_vector);
+    
+    int i = 0;
+    int j = 0;
+    
+    while(i < size_e && j < size_v - 1){ // size_v - 1 arestas para formar a arvore minima
+        Edge *edge = vector_get(edge_vector, i);
+        int vertex1 = edge_get_vertex1(edge);
+        int vertex2 = edge_get_vertex2(edge);
+        
+        if(uf_find(uf, vertex1) != uf_find(uf, vertex2)){
+            uf_union(uf, vertex1, vertex2);
+            j++;
+        }
+        i++;
+    }
+}
+
 int main(int argc, char **argv){
     
     if(argc < 3){
@@ -101,6 +125,8 @@ int main(int argc, char **argv){
     int n_edges = vector_size(vertex_vector)-1;
     Vector *edge_vector = vector_init(n_edges, edge_destroy, edge_compare);
     calculate_distance(edge_vector, vertex_vector, *dimension);
+
+
 
     vector_destroy(vertex_vector);
     vector_destroy(edge_vector);
