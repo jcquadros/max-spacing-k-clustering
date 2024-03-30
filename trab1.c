@@ -20,7 +20,7 @@ int process_line(char *line, Vector *vertex_vector, int aloc){
     while (token)
     {
         coord[n] = atof(token);
-
+        
         if (n == aloc)
         {   
             aloc++;
@@ -86,18 +86,6 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector, int dimensio
     }
 }
 
-// void print_teste_vertices(Vector *v, int d)
-// {
-//      int i = 0;
-//      int size_v = vector_size(v);
-//      while(i < size_v){
-
-//          Vertex * vex = vector_get(v, i);
-//          vertex_print(vex, d);
-//          i++;
-//      }
-// }
-
 // isso aqui retorna uma quase mst, mais especificamente um union find com os grupos que a gente tem que retornar na resposta
 // entao o próximo passo é encontrar cada grupo formado pelo union find. Esses prints ajudam muito a entender o que está acontecendo
 // to pensando em usar um vetor de listas encadeadas para definir os grupos. esse vetor tem tamanho k (grupos) e cada posição é uma lista encadeada
@@ -142,6 +130,7 @@ int main(int argc, char **argv)
         // formato de entrada: ./trab1 entrada k saida
         return 1;
     }
+    
     int *dimension = (int *)malloc(sizeof(int));
     int k = atoi(argv[2]); // TODO : verificar se é nulo
 
@@ -149,29 +138,24 @@ int main(int argc, char **argv)
     setup(argv[1], vertex_vector, dimension);
 
 
-    int n_edges = vector_size(vertex_vector) - 1;
-    Vector *edge_vector = vector_init(n_edges, edge_destroy, edge_compare);
+    int n_edges = vector_size(vertex_vector);
+    Vector *edge_vector = vector_init((n_edges * n_edges) / 2, edge_destroy, edge_compare);
     calculate_distance(edge_vector, vertex_vector, *dimension);
 
     UF *mst = kruskal(edge_vector, vertex_vector, k);
     
-    for(int i = 0; i < vector_size(edge_vector); i++){
-        Edge* ed = vector_get(edge_vector, i);
-        Vertex *v1 = vector_get(vertex_vector,edge_get_vertex1(ed));
-        Vertex *v2 = vector_get(vertex_vector, edge_get_vertex2(ed));
-        double weight = edge_get_weight(ed);
-        printf("%lf \t %s[%d]  %s[%d]\n",weight, vertex_get_id(v1), edge_get_vertex1(ed), vertex_get_id(v2), edge_get_vertex2(ed));
-    }
-    
-    uf_destroy(mst);
+    // for(int i = 0; i < vector_size(edge_vector); i++){
+    //     Edge* ed = vector_get(edge_vector, i);
+    //     Vertex *v1 = vector_get(vertex_vector,edge_get_vertex1(ed));
+    //     Vertex *v2 = vector_get(vertex_vector, edge_get_vertex2(ed));
+    //     double weight = edge_get_weight(ed);
+    //     printf("%lf \t %s[%d]  %s[%d]\n",weight, vertex_get_id(v1), edge_get_vertex1(ed), vertex_get_id(v2), edge_get_vertex2(ed));
+    // }
 
+    uf_destroy(mst);
     vector_destroy(edge_vector);
     vector_destroy(vertex_vector);
     free(dimension);
 
-    // ordenar
-    // calcular a arvore minima
-    // remover k ultimos
-    // salvar resultado
     return 0;
 }

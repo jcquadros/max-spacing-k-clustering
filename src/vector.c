@@ -31,7 +31,7 @@ Vector *vector_init(int size, destroy_vector destroy_fn, compare_vector compare_
 void vector_push_back(Vector *v, data_vector data)
 {
     if (v->size >= v->capacity)
-    {
+    {   
         v->capacity *= 2;
         v->data = (data_vector *)realloc(v->data, v->capacity * sizeof(data_vector));
     }
