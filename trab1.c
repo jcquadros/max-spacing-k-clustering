@@ -130,7 +130,7 @@ int main(int argc, char **argv)
         // formato de entrada: ./trab1 entrada k saida
         return 1;
     }
-    
+
     int *dimension = (int *)malloc(sizeof(int));
     int k = atoi(argv[2]); // TODO : verificar se é nulo
 
