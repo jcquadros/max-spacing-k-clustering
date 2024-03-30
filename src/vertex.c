@@ -50,16 +50,18 @@ void vertex_destroy(void *v)
 
 void vertex_print(Vertex *v, int d)
 {
-    printf("Nome Vertice: %s\n", v->id);
-    printf("Coordenadas: ");
-
+    printf("%s,", v->id);
     int n = 0;
 
     while (n < d)
     {
         double p = v->position[n];
-        printf("%.2f ", p);
+        
+        if(n+1 == d)
+            printf("%.15f\n", p);
+        else
+            printf("%.15f,", p);
+        
         n++;
     }
-    printf("\n\n");
 }

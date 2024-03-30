@@ -1,6 +1,7 @@
 #include "edge.h"
 #include <stdlib.h>
 #include <stdio.h>
+
 struct edge
 {
     int vertex1;
