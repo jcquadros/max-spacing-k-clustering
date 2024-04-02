@@ -137,9 +137,10 @@ int main(int argc, char **argv)
     Vector *vertex_vector = vector_init(10, vertex_destroy, NULL);
     setup(argv[1], vertex_vector, dimension);
 
+    int n_vertex = vector_size(vertex_vector);
+    int n_edges = ((n_vertex * n_vertex) - n_vertex) / 2;
 
-    int n_edges = vector_size(vertex_vector);
-    Vector *edge_vector = vector_init((n_edges * n_edges) / 2, edge_destroy, edge_compare);
+    Vector *edge_vector = vector_init(n_edges, edge_destroy, edge_compare);
     calculate_distance(edge_vector, vertex_vector, *dimension);
 
     UF *mst = kruskal(edge_vector, vertex_vector, k);
