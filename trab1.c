@@ -149,39 +149,50 @@ void group_vector_destroy(void *group)
 void output(Vector *vertex_vector, UF *mst, int k)
 {
     int size = vector_size(vertex_vector);
-    Vector *group_vector = vector_init(size, group_vector_destroy, group_vector_compare);
+    printf("size: %d\n", size);
+    Vector **group_vector = (Vector **)calloc(k , sizeof(Vector *));
     for (int i = 0; i < size; i++)
     {
-        int group = uf_find(mst, i);
-        Vector *group_list = vector_get(group_vector, group);
-        if (group_list == NULL)
+        int root = uf_find(mst, i);
+        if (group_vector[root] == NULL)
         {
-            group_list = vector_init(10, NULL, group_compare);
-            vector_push_back(group_vector, group_list);
+            group_vector[root] = vector_init(10, NULL , group_compare);
         }
-        vector_push_back(group_list, vector_get(vertex_vector, i));
+        vector_push_back(group_vector[root], vertex_get_id(vector_get(vertex_vector, i)));
     }
 
-    for (int i = 0; i < size; i++)
-    {
-        Vector *group_list = vector_get(group_vector, i);
-        vector_sort(group_list);
+    for(int i = 0; i < k; i++){
+        if(group_vector[i]){
+            vector_sort(group_vector[i]);
+        }
     }
-    vector_sort(group_vector);
 
-    // print groups
+    qsort(group_vector, k, sizeof(Vector *), group_vector_compare);
+
     for (int i = 0; i < k; i++)
     {
-        Vector *group_list = vector_get(group_vector, i);
-        for (int j = 0; j < vector_size(group_list); j++)
+        if (group_vector[i])
         {
-            Vertex *vertex = vector_get(group_list, j);
-            printf("%s ", vertex_get_id(vertex));
+            int size = vector_size(group_vector[i]);
+            for (int j = 0; j < size; j++)
+            {
+                printf("%s", (char*)vector_get(group_vector[i], j));
+                if (j < size - 1)
+                    printf(",");
+            }
+            printf("\n");
         }
-        printf("\n");
     }
 
-    vector_destroy(group_vector);
+    for (int i = 0; i < k; i++)
+    {
+        if (group_vector[i])
+        {
+            vector_destroy(group_vector[i]);
+        }
+    }
+
+    free(group_vector);
 }
 
 int main(int argc, char **argv)
