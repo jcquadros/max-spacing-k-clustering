@@ -120,6 +120,70 @@ UF * kruskal(Vector *edge_vector, Vector *vertex_vector, int k)
     return uf;
 }
 
+int group_compare(const void *a, const void *b){
+    return strcmp((char*)a, (char*)b);
+}
+
+
+int group_vector_compare(const void *a, const void *b)
+{
+    Vector *va = *(Vector **)a;
+    Vector *vb = *(Vector **)b;
+    if (va && vb){
+        return strcmp(vector_get(va, 0), vector_get(vb, 0));
+    }
+    if (va == NULL && vb == NULL)
+        return 0;
+    if (va == NULL)
+        return -1;
+    return 1;
+}
+
+void group_vector_destroy(void *group)
+{
+    Vector *v = (Vector *)group;
+    if (v)
+        vector_destroy(v);
+}
+
+void output(Vector *vertex_vector, UF *mst, int k)
+{
+    int size = vector_size(vertex_vector);
+    Vector *group_vector = vector_init(size, group_vector_destroy, group_vector_compare);
+    for (int i = 0; i < size; i++)
+    {
+        int group = uf_find(mst, i);
+        Vector *group_list = vector_get(group_vector, group);
+        if (group_list == NULL)
+        {
+            group_list = vector_init(10, NULL, group_compare);
+            vector_push_back(group_vector, group_list);
+        }
+        vector_push_back(group_list, vector_get(vertex_vector, i));
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        Vector *group_list = vector_get(group_vector, i);
+        vector_sort(group_list);
+    }
+    vector_sort(group_vector);
+
+    // print groups
+    for (int i = 0; i < k; i++)
+    {
+        Vector *group_list = vector_get(group_vector, i);
+        for (int j = 0; j < vector_size(group_list); j++)
+        {
+            Vertex *vertex = vector_get(group_list, j);
+            printf("%s ", vertex_get_id(vertex));
+        }
+        printf("\n");
+    }
+
+    vector_destroy(group_vector);
+}
+
 int main(int argc, char **argv)
 {
 
@@ -153,10 +217,13 @@ int main(int argc, char **argv)
     //     printf("%lf \t %s[%d]  %s[%d]\n",weight, vertex_get_id(v1), edge_get_vertex1(ed), vertex_get_id(v2), edge_get_vertex2(ed));
     // }
 
-    uf_destroy(mst);
     vector_destroy(edge_vector);
-    vector_destroy(vertex_vector);
     free(dimension);
+
+    output(vertex_vector, mst, k);
+
+    uf_destroy(mst);
+    vector_destroy(vertex_vector);
 
     return 0;
 }
