@@ -182,8 +182,14 @@ void sort_group(Vector **group_vector, int size)
     qsort(group_vector, size, sizeof(Vector *), group_vector_compare);
 }
 
-void print_group(Vector **group_vector, int size)
+void print_group(Vector **group_vector, int size, char *output_file)
 {
+    FILE *file = fopen(output_file, "w");
+    if (file == NULL)
+    {
+        ERROR_MSG("Erro ao abrir arquivo de saída!\n");
+    }
+
     for (int i = 0; i < size; i++)
     {
         if (group_vector[i] != NULL)
@@ -191,14 +197,17 @@ void print_group(Vector **group_vector, int size)
             int g_size = vector_size(group_vector[i]);
             for (int j = 0; j < g_size; j++)
             {
-                printf("%s", (char *)vector_get(group_vector[i], j));
+                fprintf(file, "%s", (char *)vector_get(group_vector[i], j));
                 if (j < g_size - 1)
-                    printf(" ");
+                    fprintf(file, ",");
             }
-            printf("\n");
+            fprintf(file, "\n");
         }
     }
+
+    fclose(file);
 }
+
 
 void free_group(Vector **group_vector, int size)
 {
@@ -208,11 +217,11 @@ void free_group(Vector **group_vector, int size)
     free(group_vector);
 }
 
-void output(Vector *vertex_vector, UF *mst, int k)
+void output(Vector *vertex_vector, UF *mst, int k, char *output_file)
 {
     Vector **group_vector = group_vertices(vertex_vector, mst);
     sort_group(group_vector, vector_size(vertex_vector));
-    print_group(group_vector, vector_size(vertex_vector));
+    print_group(group_vector, vector_size(vertex_vector), output_file);
     free_group(group_vector, vector_size(vertex_vector));
 }
 
@@ -225,13 +234,17 @@ int main(int argc, char **argv)
     int dimension = 0;
 
     Vector *vertex_vector = setup(argv[1], &dimension, k);
+    printf("Setup\n");
     Vector *edge_vector = calculate_distance(vertex_vector, dimension);
+    printf("Calculate\n");
     UF *mst = kruskal(edge_vector, vertex_vector, k);
-    output(vertex_vector, mst, k);
-
-    uf_destroy(mst);
+    printf("Kruskal\n");
     vector_destroy(edge_vector);
+    printf("Destroy 1\n");
+    output(vertex_vector, mst, k, argv[3]);
+    printf("Output\n");
+    uf_destroy(mst);
     vector_destroy(vertex_vector);
-
+    printf("Destroy 2\n");
     return 0;
 }
