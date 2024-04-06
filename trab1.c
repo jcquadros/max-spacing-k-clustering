@@ -6,25 +6,30 @@
 #include <stdlib.h>
 #include <string.h>
 
-int process_line(char *line, Vector *vertex_vector, int aloc){
-    
+
+#define ERROR_MSG(msg) fprintf(stderr, msg); exit(EXIT_FAILURE)
+
+
+int process_line(char *line, Vector *vertex_vector, int aloc)
+{
     int n = 0;
     char *name = strtok(line, ",");
     char *token = strtok(NULL, ",");
 
-            if (token == NULL)
-                exit(printf("Arquivo de entradas invalido!\n")); 
+    if (token == NULL){
+        ERROR_MSG("Erro ao processar linha!\n");
+    }
 
-    double *coord = (double *)malloc((aloc+1) * sizeof(double));
+    double *coord = (double *)malloc((aloc + 1) * sizeof(double));
 
     while (token)
     {
         coord[n] = atof(token);
-        
+
         if (n == aloc)
-        {   
+        {
             aloc++;
-            coord = (double *)realloc(coord, (aloc+1) * sizeof(double));
+            coord = (double *)realloc(coord, (aloc + 1) * sizeof(double));
         }
 
         n++;
@@ -35,24 +40,17 @@ int process_line(char *line, Vector *vertex_vector, int aloc){
     vector_push_back(vertex_vector, v);
 
     return aloc;
-
 }
 
-void setup(char *directory, Vector *vertex_vector, int *dimension)
-{
-    FILE *file;
-    file = fopen(directory, "r");
-
-    if (file == NULL)
-        exit(printf("Arquivo de entradas não encontrado!\nNome: %s\n", directory));
-
+Vector *read_input(FILE *file, int *dimension, int k){
+    Vector *vertex_vector = vector_init(10, vertex_destroy, NULL);
     char *line = NULL;
     size_t size = 0;
     int len;
     int aloc = 2;
 
-    if((len = getline(&line, &size, file))!= -1){
-
+    if ((len = getline(&line, &size, file)) != -1)
+    {
         line[len - 1] = '\0';
         aloc = process_line(line, vertex_vector, aloc);
     }
@@ -66,12 +64,36 @@ void setup(char *directory, Vector *vertex_vector, int *dimension)
     *dimension = aloc;
 
     free(line);
-    fclose(file);
+    return vertex_vector;
 }
 
-void calculate_distance(Vector *edge_vector, Vector *vertex_vector, int dimension)
+Vector *setup(char *directory, int *dimension, int k)
+{
+    FILE *file;
+    file = fopen(directory, "r");
+
+    if (file == NULL){
+        ERROR_MSG("Arquivo de entradas não encontrado!\n");
+    }
+
+    Vector *vertex_vector = read_input(file, dimension, k);
+    fclose(file);
+
+    if (k < 1 || k > vector_size(vertex_vector))
+    {
+        vector_destroy(vertex_vector);
+        ERROR_MSG("Valor de k inválido!\n");
+    }
+
+    return vertex_vector;
+}
+
+Vector *calculate_distance(Vector *vertex_vector, int dimension)
 {
     int size_vv = vector_size(vertex_vector);
+    int size_ev = (size_vv * (size_vv - 1)) / 2;
+    Vector *edge_vector = vector_init(size_ev, edge_destroy, edge_compare);
+
     for (int i = 0; i < size_vv - 1; i++)
     {
         for (int j = i + 1; j < size_vv; j++)
@@ -84,14 +106,11 @@ void calculate_distance(Vector *edge_vector, Vector *vertex_vector, int dimensio
             vector_push_back(edge_vector, edge);
         }
     }
+
+    return edge_vector;
 }
 
-// isso aqui retorna uma quase mst, mais especificamente um union find com os grupos que a gente tem que retornar na resposta
-// entao o próximo passo é encontrar cada grupo formado pelo union find. Esses prints ajudam muito a entender o que está acontecendo
-// to pensando em usar um vetor de listas encadeadas para definir os grupos. esse vetor tem tamanho k (grupos) e cada posição é uma lista encadeada
-// a medida que percorre o union find verifica qual é a raiz, ou seja, a qual dos k grupos ele pertence e adiciona à lista encadeada do grupo respectivo
-// criar uma função pra isso
-UF * kruskal(Vector *edge_vector, Vector *vertex_vector, int k)
+UF *kruskal(Vector *edge_vector, Vector *vertex_vector, int k)
 {
     int size_v = vector_size(vertex_vector);
     int size_e = vector_size(edge_vector);
@@ -101,9 +120,9 @@ UF * kruskal(Vector *edge_vector, Vector *vertex_vector, int k)
 
     int i = 0;
     int j = 0;
-
-    while (i < size_e && j < size_v - k)
-    { // size_v - 1 arestas para formar a arvore minima
+    
+    while (i < size_e && j < size_v - k) // (size_v -1) - (k - 1) = size_v - k
+    {
         Edge *edge = vector_get(edge_vector, i);
         int vertex1 = edge_get_vertex1(edge);
         int vertex2 = edge_get_vertex2(edge);
@@ -111,8 +130,6 @@ UF * kruskal(Vector *edge_vector, Vector *vertex_vector, int k)
         if (uf_find(uf, vertex1) != uf_find(uf, vertex2))
         {
             uf_union(uf, vertex1, vertex2);
-            //printf("%s[%d] %s[%d]\n", vertex_get_id(vector_get(vertex_vector, vertex1)), vertex1, vertex_get_id(vector_get(vertex_vector, vertex2)), vertex2); 
-            //print_uf(uf);
             j++;
         }
         i++;
@@ -120,120 +137,100 @@ UF * kruskal(Vector *edge_vector, Vector *vertex_vector, int k)
     return uf;
 }
 
-int group_compare(const void *a, const void *b){
-    return strcmp((char*)a, (char*)b);
+int group_compare(const void *a, const void *b)
+{
+    return strcmp(*(char **)a, *(char **)b);
 }
-
 
 int group_vector_compare(const void *a, const void *b)
 {
     Vector *va = *(Vector **)a;
     Vector *vb = *(Vector **)b;
-    if (va && vb){
+    if (va && vb)
         return strcmp(vector_get(va, 0), vector_get(vb, 0));
-    }
+
     if (va == NULL && vb == NULL)
         return 0;
+
     if (va == NULL)
         return -1;
+
     return 1;
 }
 
-void group_vector_destroy(void *group)
-{
-    Vector *v = (Vector *)group;
-    if (v)
-        vector_destroy(v);
-}
-
-void output(Vector *vertex_vector, UF *mst, int k)
+Vector **group_vertices(Vector *vertex_vector, UF *mst)
 {
     int size = vector_size(vertex_vector);
-    printf("size: %d\n", size);
-    Vector **group_vector = (Vector **)calloc(k , sizeof(Vector *));
+    Vector **group_vector = (Vector **)calloc(size, sizeof(Vector *));
+
     for (int i = 0; i < size; i++)
     {
-        int root = uf_find(mst, i);
-        if (group_vector[root] == NULL)
-        {
-            group_vector[root] = vector_init(10, NULL , group_compare);
-        }
-        vector_push_back(group_vector[root], vertex_get_id(vector_get(vertex_vector, i)));
+        int group = uf_find(mst, i);
+        if (group_vector[group] == NULL)
+            group_vector[group] = vector_init(10, NULL, group_compare);
+        vector_push_back(group_vector[group], vertex_get_id(vector_get(vertex_vector, i)));
     }
 
-    for(int i = 0; i < k; i++){
-        if(group_vector[i]){
-            vector_sort(group_vector[i]);
-        }
-    }
+    return group_vector;
+}
 
-    qsort(group_vector, k, sizeof(Vector *), group_vector_compare);
-
-    for (int i = 0; i < k; i++)
-    {
+void sort_group(Vector **group_vector, int size)
+{
+    for (int i = 0; i < size; i++)
         if (group_vector[i])
+            vector_sort(group_vector[i]);
+    qsort(group_vector, size, sizeof(Vector *), group_vector_compare);
+}
+
+void print_group(Vector **group_vector, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (group_vector[i] != NULL)
         {
-            int size = vector_size(group_vector[i]);
-            for (int j = 0; j < size; j++)
+            int g_size = vector_size(group_vector[i]);
+            for (int j = 0; j < g_size; j++)
             {
-                printf("%s", (char*)vector_get(group_vector[i], j));
-                if (j < size - 1)
-                    printf(",");
+                printf("%s", (char *)vector_get(group_vector[i], j));
+                if (j < g_size - 1)
+                    printf(" ");
             }
             printf("\n");
         }
     }
+}
 
-    for (int i = 0; i < k; i++)
-    {
-        if (group_vector[i])
-        {
+void free_group(Vector **group_vector, int size)
+{
+    for (int i = 0; i < size; i++)
+        if (group_vector[i] != NULL)
             vector_destroy(group_vector[i]);
-        }
-    }
-
     free(group_vector);
+}
+
+void output(Vector *vertex_vector, UF *mst, int k)
+{
+    Vector **group_vector = group_vertices(vertex_vector, mst);
+    sort_group(group_vector, vector_size(vertex_vector));
+    print_group(group_vector, vector_size(vertex_vector));
+    free_group(group_vector, vector_size(vertex_vector));
 }
 
 int main(int argc, char **argv)
 {
-
     if (argc < 4)
-    {
-        // TODO : tem que colocar em algum lugar todas as verificações necessarias para encerrar o programa em caso de entrada errada
-        // exemplos, valor de k > numero de vertices. arquivo de entrada nao existente, erro ao salvar o arquivo (sei lá, o professor colocou uma pasta que nao existe)
-        // formato de entrada: ./trab1 entrada k saida
         return 1;
-    }
 
-    int *dimension = (int *)malloc(sizeof(int));
-    int k = atoi(argv[2]); // TODO : verificar se é nulo
+    int k = atoi(argv[2]);
+    int dimension = 0;
 
-    Vector *vertex_vector = vector_init(10, vertex_destroy, NULL);
-    setup(argv[1], vertex_vector, dimension);
-
-    int n_vertex = vector_size(vertex_vector);
-    int n_edges = ((n_vertex * n_vertex) - n_vertex) / 2;
-
-    Vector *edge_vector = vector_init(n_edges, edge_destroy, edge_compare);
-    calculate_distance(edge_vector, vertex_vector, *dimension);
-
+    Vector *vertex_vector = setup(argv[1], &dimension, k);
+    Vector *edge_vector = calculate_distance(vertex_vector, dimension);
     UF *mst = kruskal(edge_vector, vertex_vector, k);
-    
-    // for(int i = 0; i < vector_size(edge_vector); i++){
-    //     Edge* ed = vector_get(edge_vector, i);
-    //     Vertex *v1 = vector_get(vertex_vector,edge_get_vertex1(ed));
-    //     Vertex *v2 = vector_get(vertex_vector, edge_get_vertex2(ed));
-    //     double weight = edge_get_weight(ed);
-    //     printf("%lf \t %s[%d]  %s[%d]\n",weight, vertex_get_id(v1), edge_get_vertex1(ed), vertex_get_id(v2), edge_get_vertex2(ed));
-    // }
-
-    vector_destroy(edge_vector);
-    free(dimension);
-
     output(vertex_vector, mst, k);
 
     uf_destroy(mst);
+    vector_destroy(edge_vector);
     vector_destroy(vertex_vector);
 
     return 0;
