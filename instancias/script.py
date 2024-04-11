@@ -23,8 +23,8 @@ def generate_vertices_file(name_length, dimension, num_vertices):
     print(f"Arquivo {filepath} gerado com sucesso.")
 
 if __name__ == "__main__":
-    name_length = 50
-    dimension = 50
-    num_vertices = 47000
+    name_length = 30
+    dimension = 5
+    num_vertices = 25000
     
     generate_vertices_file(name_length, dimension, num_vertices)

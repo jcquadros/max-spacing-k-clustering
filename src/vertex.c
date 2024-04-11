@@ -4,18 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-struct vertex
-{
-    char *id;
-    double *position;
-};
 
-Vertex *vertex_init(char *id, double *position)
+void vertex_set(Vertex *v, char *id, double *position)
 {
-    Vertex *v = (Vertex *)calloc(1, sizeof(Vertex));
     v->id = strdup(id);
     v->position = position;
-    return v;
 }
 
 char *vertex_get_id(Vertex *v)
@@ -40,28 +33,8 @@ double vertex_distance_between(Vertex *v1, Vertex *v2, int dimension)
     return sqrt(sum);
 }
 
-void vertex_destroy(void *v)
+void vertex_destroy(Vertex *v)
 {
-    Vertex *s = (Vertex *)v;
-    free(s->id);
-    free(s->position);
-    free(s);
-}
-
-void vertex_print(Vertex *v, int d)
-{
-    printf("%s,", v->id);
-    int n = 0;
-
-    while (n < d)
-    {
-        double p = v->position[n];
-        
-        if(n+1 == d)
-            printf("%.15f\n", p);
-        else
-            printf("%.15f,", p);
-        
-        n++;
-    }
+    free(v->id);
+    free(v->position);
 }
