@@ -60,11 +60,3 @@ void uf_destroy(UF *uf)
     free(uf);
 }
 
-void print_uf(UF *uf)
-{
-    for (int i = 0; i < uf->size; i++)
-    {
-        printf("%d ", uf->id[i]);
-    }
-    printf("\n");
-}

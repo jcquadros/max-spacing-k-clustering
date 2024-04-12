@@ -14,7 +14,6 @@ VertexVector *vertex_vector_init(int size)
 {
     if (size <= 0)
     {
-        printf("Size must be greater than 0\n");
         exit(1);
     }
 
@@ -41,7 +40,6 @@ Vertex *vertex_vector_get(VertexVector *vv, int idx)
 {
     if (idx < 0 || idx >= vv->size)
     {
-        printf("Invalid idx '%d' for VertexVector with size '%d'.\n", idx, vv->size);
         exit(1);
     }
     return &(vv->data[idx]);
@@ -59,11 +57,11 @@ void vertex_vector_sort(VertexVector *vv)
 
 int vertex_vector_compare(const void *a, const void *b)
 {
-    Vertex vertex1 = *(Vertex *)a;
-    Vertex vertex2 = *(Vertex *)b;
+    Vertex *vertex1 = (Vertex *)a;
+    Vertex *vertex2 = (Vertex *)b;
 
     // Comparação baseada nos IDs dos vértices
-    return strcmp(vertex_get_id(&vertex1), vertex_get_id(&vertex2));
+    return strcmp(vertex_get_id(vertex1), vertex_get_id(vertex2));
 }
 
 void vertex_vector_destroy(VertexVector *vv)

@@ -24,7 +24,8 @@ EdgeVector *edge_vector_init(int size)
     return ev;
 }
 
-void edge_vector_push_back(EdgeVector *ev, int vertex1, int vertex2, double weight){
+void edge_vector_push_back(EdgeVector *ev, int vertex1, int vertex2, double weight)
+{
     if (ev->size >= ev->capacity)
     {
         ev->capacity *= 2;
@@ -57,16 +58,16 @@ void edge_vector_sort(EdgeVector *ev)
 
 int edge_vector_compare(const void *a, const void *b)
 {
-    Edge edge1 = *(Edge *)a;
-    Edge edge2 = *(Edge *)b;
+    Edge *edge1 = (Edge *)a;
+    Edge *edge2 = (Edge *)b;
 
-    if (edge1.weight > edge2.weight)
-    {
-        return 1;
-    }
-    else if (edge1.weight < edge2.weight)
+    if (edge_get_weight(edge1) < edge_get_weight(edge2))
     {
         return -1;
+    }
+    else if (edge_get_weight(edge1) > edge_get_weight(edge2))
+    {
+        return 1;
     }
     return 0;
 }
