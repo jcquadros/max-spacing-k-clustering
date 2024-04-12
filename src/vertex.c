@@ -38,3 +38,12 @@ void vertex_destroy(Vertex *v)
     free(v->id);
     free(v->position);
 }
+
+int vertex_compare(const void *a, const void *b)
+{
+    Vertex *vertex1 = (Vertex *)a;
+    Vertex *vertex2 = (Vertex *)b;
+
+    // Comparação baseada nos IDs dos vértices
+    return strcmp(vertex1->id, vertex2->id);
+}

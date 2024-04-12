@@ -73,22 +73,6 @@ int vertex_vector_size(VertexVector *vv);
  */
 void vertex_vector_sort(VertexVector *vv);
 
-/*
- * vertex_vector_compare
- * ---------------------
- * Função de comparação a ser usada pelo algoritmo de ordenação para comparar
- * os identificadores de dois vértices.
- *
- * Parâmetros:
- *   - a: ponteiro para o primeiro vértice.
- *   - b: ponteiro para o segundo vértice.
- *
- * Retorno:
- *   - Um valor negativo se o identificador de 'a' for menor que o de 'b',
- *     zero se forem iguais, ou um valor positivo se o identificador de 'a'
- *     for maior que o de 'b'.
- */
-int vertex_vector_compare(const void *a, const void *b);
 
 /*
  * vertex_vector_destroy

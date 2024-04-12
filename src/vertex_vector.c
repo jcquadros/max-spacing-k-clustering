@@ -52,16 +52,7 @@ int vertex_vector_size(VertexVector *vv)
 
 void vertex_vector_sort(VertexVector *vv)
 {
-    qsort(vv->data, vv->size, sizeof(Vertex), vertex_vector_compare);
-}
-
-int vertex_vector_compare(const void *a, const void *b)
-{
-    Vertex *vertex1 = (Vertex *)a;
-    Vertex *vertex2 = (Vertex *)b;
-
-    // Comparação baseada nos IDs dos vértices
-    return strcmp(vertex_get_id(vertex1), vertex_get_id(vertex2));
+    qsort(vv->data, vv->size, sizeof(Vertex), vertex_compare);
 }
 
 void vertex_vector_destroy(VertexVector *vv)

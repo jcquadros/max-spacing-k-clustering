@@ -77,4 +77,21 @@ double edge_get_weight(Edge *ed);
  */
 void edge_destroy(Edge *ed);
 
+/*
+ * edge_compare
+ * -------------------
+ * Função de comparação a ser usada pelo algoritmo de ordenação para comparar
+ * os pesos de duas arestas.
+ *
+ * Parâmetros:
+ *   - a: ponteiro para a primeira aresta.
+ *   - b: ponteiro para a segunda aresta.
+ *
+ * Retorno:
+ *   - Um valor negativo se o peso da aresta 'a' for menor que o da aresta 'b',
+ *     zero se forem iguais, ou um valor positivo se o peso da aresta 'a'
+ *     for maior que o da aresta 'b'.
+ */
+int edge_compare(const void *a, const void *b);
+
 #endif

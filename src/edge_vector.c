@@ -13,7 +13,6 @@ EdgeVector *edge_vector_init(int size)
 {
     if (size <= 0)
     {
-        printf("Size must be greater than 0\n");
         exit(1);
     }
 
@@ -40,7 +39,6 @@ Edge *edge_vector_get(EdgeVector *ev, int idx)
 {
     if (idx < 0 || idx >= ev->size)
     {
-        printf("Invalid idx '%d' for EdgeVector with size '%d'.\n", idx, ev->size);
         exit(1);
     }
     return &(ev->data[idx]);
@@ -53,24 +51,10 @@ int edge_vector_size(EdgeVector *ev)
 
 void edge_vector_sort(EdgeVector *ev)
 {
-    qsort(ev->data, ev->size, sizeof(Edge), edge_vector_compare);
+    qsort(ev->data, ev->size, sizeof(Edge), edge_compare);
 }
 
-int edge_vector_compare(const void *a, const void *b)
-{
-    Edge *edge1 = (Edge *)a;
-    Edge *edge2 = (Edge *)b;
 
-    if (edge_get_weight(edge1) < edge_get_weight(edge2))
-    {
-        return -1;
-    }
-    else if (edge_get_weight(edge1) > edge_get_weight(edge2))
-    {
-        return 1;
-    }
-    return 0;
-}
 
 void edge_vector_destroy(EdgeVector *ev)
 {
