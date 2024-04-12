@@ -1,4 +1,7 @@
 #include "io.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 // Custo Numero de tokens da linha 1 do nome e N dimensoes + custo de adicionar no vetor que é constante
 // estou analizando aquantidade de strtok
 int process_line(char *line, VertexVector *vertex_vector, int aloc)

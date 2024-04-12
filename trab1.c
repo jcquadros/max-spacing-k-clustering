@@ -4,6 +4,7 @@
 #include "vertex.h"
 #include "union_find.h"
 #include "io.h"
+#include <stdlib.h>
 
 /*
  * setup

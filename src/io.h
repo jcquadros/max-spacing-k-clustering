@@ -1,9 +1,6 @@
 #ifndef IO_H
 #define IO_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "vertex_vector.h"
 #include "union_find.h"
 
