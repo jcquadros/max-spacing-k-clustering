@@ -62,7 +62,7 @@ EdgeVector *calculate_distance(VertexVector *vertex_vector, int dimension)
             edge_vector_push_back(edge_vector, i, j, weight);
         }
     }
-
+    edge_vector_sort(edge_vector);
     return edge_vector;
 }
 
@@ -87,7 +87,6 @@ UF *kruskal(EdgeVector *edge_vector, VertexVector *vertex_vector, int k)
     int size_e = edge_vector_size(edge_vector);
 
     UF *mst = uf_init(size_v);
-    edge_vector_sort(edge_vector);
 
     int i = 0;
     int j = 0;
