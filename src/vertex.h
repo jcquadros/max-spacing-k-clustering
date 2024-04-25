@@ -1,18 +1,96 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-typedef struct vertex Vertex;
+/*
+ * Vertex
+ * ------
+ * Estrutura de dados para representar um vértice em R^n.
+ */
 
-Vertex *vertex_init(char *id, double *position);
+typedef struct vertex
+{
+    char *id;
+    double *position;
+}Vertex; // Tipo nao opaco para representar um vertice.
 
+/*
+ * vertex_set
+ * ----------
+ * Define as propriedades de um vértice com o identificador e a posição especificados.
+ *
+ * Parâmetros:
+ *   - v: o vértice a ser configurado.
+ *   - id: identificador do vértice.
+ *   - position: posição do vértice em R^n.
+ */
+void vertex_set(Vertex *v, char *id, double *position);
+
+/*
+ * vertex_get_id
+ * -------------
+ * Retorna o identificador do vértice.
+ *
+ * Parâmetros:
+ *   - v: o vértice.
+ *
+ * Retorno:
+ *   - O identificador do vértice.
+ */
 char *vertex_get_id(Vertex *v);
 
+/*
+ * vertex_get_position
+ * -------------------
+ * Retorna a posição do vértice.
+ *
+ * Parâmetros:
+ *   - v: o vértice.
+ *
+ * Retorno:
+ *   - Um ponteiro para a posição do vértice.
+ */
 double *vertex_get_position(Vertex *v);
 
+/*
+ * vertex_distance_between
+ * ------------------------
+ * Calcula a distância Euclidiana entre dois vértices.
+ *
+ * Parâmetros:
+ *   - v1: o primeiro vértice.
+ *   - v2: o segundo vértice.
+ *   - dimension: a dimensão do espaço.
+ *
+ * Retorno:
+ *   - A distância Euclidiana entre os dois vértices.
+ */
 double vertex_distance_between(Vertex *v1, Vertex *v2, int dimension);
 
-void vertex_destroy(void *v);
+/*
+ * vertex_destroy
+ * --------------
+ * Libera a memória alocada para o vértice.
+ *
+ * Parâmetros:
+ *   - v: o vértice a ser destruído.
+ */
+void vertex_destroy(Vertex *v);
 
-void vertex_print(Vertex *v, int d);
+/*
+ * vertex_compare
+ * ---------------------
+ * Função de comparação a ser usada pelo algoritmo de ordenação para comparar
+ * os identificadores de dois vértices.
+ *
+ * Parâmetros:
+ *   - a: ponteiro para o primeiro vértice.
+ *   - b: ponteiro para o segundo vértice.
+ *
+ * Retorno:
+ *   - Um valor negativo se o identificador de 'a' for menor que o de 'b',
+ *     zero se forem iguais, ou um valor positivo se o identificador de 'a'
+ *     for maior que o de 'b'.
+ */
+int vertex_compare(const void *a, const void *b);
 
 #endif

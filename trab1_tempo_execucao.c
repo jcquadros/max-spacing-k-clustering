@@ -5,6 +5,8 @@
 #include "union_find.h"
 #include "io.h"
 #include <stdlib.h>
+#include <time.h>
+#include<stdio.h>
 
 /*
  * setup
@@ -66,7 +68,6 @@ EdgeVector *calculate_distance(VertexVector *vertex_vector, int dimension)
     return edge_vector;
 }
 
-
 /*
  * kruskal
  * -------
@@ -90,7 +91,7 @@ UF *kruskal(EdgeVector *edge_vector, VertexVector *vertex_vector, int k)
 
     int i = 0;
     int j = 0;
-    
+
     while (i < size_e && j < size_v - k) // (size_v -1) - (k - 1) = size_v - k
     {
         Edge edge = *edge_vector_get(edge_vector, i);
@@ -100,13 +101,12 @@ UF *kruskal(EdgeVector *edge_vector, VertexVector *vertex_vector, int k)
         if (uf_find(mst, vertex1) != uf_find(mst, vertex2))
         {
             uf_union(mst, vertex1, vertex2);
-            j++;    
+            j++;
         }
         i++;
     }
     return mst;
 }
-
 
 /*
  * main
@@ -116,23 +116,46 @@ UF *kruskal(EdgeVector *edge_vector, VertexVector *vertex_vector, int k)
  */
 int main(int argc, char **argv)
 {
+    clock_t start, stop, start_full, stop_full;
+    start_full = clock();
     if (argc < 4)
         return 1;
 
     int k = atoi(argv[2]);
     int dimension = 0;
-
+    start = clock();
     VertexVector *vertex_vector = setup(argv[1], &dimension, k);
+    stop = clock();
+    double time_taken_setup = ((double)stop - start)/ CLOCKS_PER_SEC;
 
+    start = clock();
     EdgeVector *edge_vector = calculate_distance(vertex_vector, dimension);
+    stop = clock();
+    double time_taken_calculate_distance = ((double)stop - start)/ CLOCKS_PER_SEC;
+
+    start = clock();
     UF *uf = kruskal(edge_vector, vertex_vector, k);
-    
+    stop = clock();
+    double time_taken_kruskal = ((double)stop - start)/ CLOCKS_PER_SEC;
+
     edge_vector_destroy(edge_vector);
 
+    start = clock();
     write_output(vertex_vector, uf, argv[3]);
+    stop = clock();
+    double time_taken_output = ((double)stop - start)/ CLOCKS_PER_SEC;
 
     uf_destroy(uf);
     vertex_vector_destroy(vertex_vector);
+
+    stop_full = clock();
+    double time_taken_total = ((double)stop_full - start_full)/ CLOCKS_PER_SEC;
+
+    printf("total: %.5f\n", time_taken_total);
+    printf("setup: %.5f\n", time_taken_setup);
+    printf("distance: %.5f\n", time_taken_calculate_distance);
+    printf("kruskal: %.5f\n", time_taken_kruskal);
+    printf("output: %.5f\n", time_taken_output);
 
     return 0;
 }
